@@ -38,18 +38,18 @@ public class BankMenu {
 		do {
 			System.out.println("*** 관리자 메뉴 ***");
 			System.out.print("\n\r1. 통장개설"
-								+ "\n2. 통장전체조회"
-								+ "\n3. 계좌번호으로 조회"
-								+ "\n4. 이름으로 조회"
+								+ "\n2. 전체 사용자 통장 조회"
+								+ "\n3. 해당 사용자 통장 조회"
+								+ "\n4. 해당 계좌 거래내역 조회"
 								+ "\n5. 통장삭제"
 								+ "\n6. 이전으로 돌아가기"
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
 			case 1 :bController.bankInsert(bankInsert()); 
 					break;
-			case 2 :printAll(bController.selectAll(inputAccountNo())); 
+			case 2 :printAll(bController.selectAll()); 
 					break;
-			case 3 :printOne(bController.selectAccountNo(inputAccountNo()));
+			case 3 :printAll(bController.selectAccountNo(inputAccountNo()));
 					break;
 			case 4 :printAll(bController.selectName(inputUserName()));
 					break;
@@ -78,13 +78,13 @@ public class BankMenu {
 								+ "\n5. 이전으로 돌아가기"
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
-			case 1 :bController.updateDeposit(inputDeposit());
+			case 1 :bController.insertDeposit(inputDeposit());
 					break;
-			case 2 :bController.updateWithdraw(inputWithdraw());
+			case 2 :bController.insertWithdraw(inputWithdraw());
 					break;
-			case 3 :printOne(bController.selectTransaction(inputAccountNo()));
+			case 3 :printAll(bController.selectTransaction(inputAccountNo()));
 					break;
-			case 4 :printAll(bController.selectAll(inputAccountNo()));
+			case 4 :printAll(bController.selectAll(inputAccountNo()));//출력용 메소드 하나 더 필요
 			case 5 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 					if(sc.next().toLowerCase().charAt(0) == 'y') {
 						return;
@@ -116,7 +116,7 @@ public class BankMenu {
 	}
 	
 	public String inputAccountNo() {
-		System.out.print("계좌번호 :");
+		System.out.print("계좌번호(-포함) :");
 		return sc.next();
 	}
 	
@@ -125,27 +125,35 @@ public class BankMenu {
 		return sc.next();
 	}
 	
-	public void printOne(Bank bank) {
+	/*public void printOne(Bank bank) {
 		System.out.println(bank);
-	}
+	}*/
 	
-	public int inputDeposit() {
+	public Bank inputDeposit() {
+		Bank bank = new Bank();
+		System.out.print("계좌번호 입력(-포함) : ");
+		bank.setAccountNo(sc.next());
 		System.out.print("입금액 :");
-		return sc.nextInt();
+		bank.setDeposit(sc.nextInt());
+		return bank;
 	}
-	public int inputWithdraw() {
+	public Bank inputWithdraw() {
+		Bank bank = new Bank(); 
+		System.out.print("계좌번호 입력(-포함) : ");
+		bank.setAccountNo(sc.next());
 		System.out.print("출금액 :");
-		return sc.nextInt();
+		bank.setDeposit(sc.nextInt());
+		return bank;
 	}
 	public Bank inputDeleteAccount() {
 		Bank bank = new Bank();
 		System.out.print("고객명 : ");
 		bank.setUserName(sc.next());
-		System.out.print("주민번호 : (-포함) ");
+		System.out.print("주민번호(-포함) :  ");
 		bank.setUserSsn(sc.next());
 		System.out.print("삭제할 계좌번호 : ");
 		bank.setAccountNo(sc.next());
-		printOne(bController.selectAccountNo(bank.getAccountNo()));
+		printAll(bController.selectAccountNo(bank.getAccountNo()));
 		System.out.println("삭제할 계좌가 해당 계좌가 맞습니까? (y/n)");
 		if(sc.next().toLowerCase().charAt(0) == 'n') {
 			System.out.println("관리자 메뉴로 돌아갑니다.");
