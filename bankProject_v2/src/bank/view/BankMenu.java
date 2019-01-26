@@ -46,15 +46,15 @@ public class BankMenu {
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
 			case 1 :bController.bankInsert(bankInsert()); 
-					  break;
+					break;
 			case 2 :printAll(bController.selectAll(inputAccountNo())); 
-					  break;
+					break;
 			case 3 :printOne(bController.selectAccountNo(inputAccountNo()));
-					  break;
+					break;
 			case 4 :printAll(bController.selectName(inputUserName()));
-					  break;
-			case 5 :deleteAccount(bController.deleteAccount(inputAccountNo()));
-					   break;
+					break;
+			case 5 :bController.deleteAccount(inputAccountNo());
+					break;
 			case 6 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 						if(sc.next().toLowerCase().charAt(0) == 'y') {
 							return;
@@ -62,8 +62,8 @@ public class BankMenu {
 							break;
 						}
 			default :System.out.println("잘못 입력하셨습니다.");
-						System.out.println("확인 후 다시 입력하세요.\n");
-						break;
+					 System.out.println("확인 후 다시 입력하세요.\n");
+					 break;
 			}
 		} while(true);
 	}
@@ -79,11 +79,11 @@ public class BankMenu {
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
 			case 1 :bController.updateDeposit(inputDeposit());
-					  break;
+					break;
 			case 2 :bController.updateWithdraw(inputWithdraw());
-					  break;
+					break;
 			case 3 :printOne(bController.selectTransaction(inputAccountNo()));
-					  break;
+					break;
 			case 4 :printAll(bController.selectAll(inputAccountNo()));
 			case 5 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 					if(sc.next().toLowerCase().charAt(0) == 'y') {
@@ -92,8 +92,8 @@ public class BankMenu {
 						break;
 					}
 			default : System.out.println("잘못 입력하셨습니다.");
-						System.out.println("확인 후 다시 입력하세요.\n");
-						break;
+					  System.out.println("확인 후 다시 입력하세요.\n");
+					  break;
 			}
 		} while(true);
 	}
@@ -104,7 +104,7 @@ public class BankMenu {
 		bank.setUserName(sc.next());
 		System.out.print("주민번호 입력 : (-포함)");
 		bank.setUserSsn(sc.next());
-		System.out.print("첫 입금액 입력 : ");
+		System.out.print("첫 입금액 입력 : (1000원 이상)");
 		bank.setDeposit(sc.nextInt());
 		return bank;
 	}
@@ -137,9 +137,20 @@ public class BankMenu {
 		System.out.print("출금액 :");
 		return sc.nextInt();
 	}
-	public void deleteAccount(Bank bank) {
+	public Bank inputDeleteAccount() {
+		Bank bank = new Bank();
 		System.out.print("고객명 : ");
-		
+		bank.setUserName(sc.next());
+		System.out.print("주민번호 : (-포함) ");
+		bank.setUserSsn(sc.next());
+		System.out.print("삭제할 계좌번호 : ");
+		bank.setAccountNo(sc.next());
+		printOne(bController.selectAccountNo(bank.getAccountNo()));
+		System.out.println("삭제할 계좌가 해당 계좌가 맞습니까? (y/n)");
+		if(sc.next().toLowerCase().charAt(0) == 'n') {
+			System.out.println("관리자 메뉴로 돌아갑니다.");
+			adminMenu();
+		}
+		return bank;		
 	}
-	
 } 
