@@ -27,9 +27,9 @@ public class BankController {
 		return null;
 	}
 
-	public Bank deleteAccount(String inputAccountNo) {
+	public void deleteAccount(Bank inputDeleteAccount) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 
 	public void updateDeposit(int inputDeposit) {
@@ -46,5 +46,7 @@ public class BankController {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 	
 }

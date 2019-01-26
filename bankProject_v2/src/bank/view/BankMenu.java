@@ -53,7 +53,7 @@ public class BankMenu {
 					break;
 			case 4 :printAll(bController.selectName(inputUserName()));
 					break;
-			case 5 :bController.deleteAccount(inputAccountNo());
+			case 5 :bController.deleteAccount(inputDeleteAccount());
 					break;
 			case 6 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 						if(sc.next().toLowerCase().charAt(0) == 'y') {
