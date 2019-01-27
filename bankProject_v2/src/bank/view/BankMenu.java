@@ -38,11 +38,12 @@ public class BankMenu {
 		do {
 			System.out.println("*** 관리자 메뉴 ***");
 			System.out.print("\n\r1. 통장개설"
-								+ "\n2. 전체 사용자 통장 조회"
-								+ "\n3. 해당 사용자 통장 조회"
-								+ "\n4. 해당 계좌 거래내역 조회"
-								+ "\n5. 통장삭제"
-								+ "\n6. 이전으로 돌아가기"
+								+ "\n2. 전체 고객 통장 조회"
+								+ "\n3. 계좌번호로 거래내역 조회"
+								+ "\n4. 고객 이름으로 통장 조회"
+								+ "\n5. 고객 핸드폰 번호 변경"
+								+ "\n6. 통장삭제"
+								+ "\n7. 이전으로 돌아가기"
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
 			case 1 :bController.bankInsert(bankInsert()); 
@@ -53,9 +54,11 @@ public class BankMenu {
 					break;
 			case 4 :printAll(bController.selectName(inputUserName()));
 					break;
-			case 5 :bController.deleteAccount(inputDeleteAccount());
+			case 5 : bController.updatePhone(inputPhone()); 
 					break;
-			case 6 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
+			case 6 :bController.deleteAccount(inputDeleteAccount());
+					break;
+			case 7 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 						if(sc.next().toLowerCase().charAt(0) == 'y') {
 							return;
 						} else {
@@ -68,6 +71,8 @@ public class BankMenu {
 		} while(true);
 	}
 	
+	
+
 	public void userMenu() {
 		do {
 			System.out.println("*** 사용자메뉴 ***");
@@ -84,7 +89,7 @@ public class BankMenu {
 					break;
 			case 3 :printAll(bController.selectTransaction(inputAccountNo()));
 					break;
-			case 4 :printAll(bController.selectAll(inputAccountNo()));//출력용 메소드 하나 더 필요
+			case 4 :printAll(bController.selectAccount(inputAccountNo()));//출력용 메소드 하나 더 필요
 			case 5 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 					if(sc.next().toLowerCase().charAt(0) == 'y') {
 						return;
@@ -102,8 +107,10 @@ public class BankMenu {
 		Bank bank = new Bank();
 		System.out.print("고객명 입력 : ");
 		bank.setUserName(sc.next());
-		System.out.print("주민번호 입력 : (-포함)");
+		System.out.print("주민번호 입력(-포함) : ");
 		bank.setUserSsn(sc.next());
+		System.out.print("핸드폰 번호 입력(-포함 : ");
+		bank.setPhone(sc.next());
 		System.out.print("첫 입금액 입력 : (1000원 이상)");
 		bank.setDeposit(sc.nextInt());
 		return bank;
@@ -125,6 +132,14 @@ public class BankMenu {
 		return sc.next();
 	}
 	
+	public Bank inputPhone() {
+		Bank bank = new Bank();
+		System.out.print("고객번호 입력 : ");
+		bank.setUserSsn(sc.next());
+		System.out.print("바꿀 핸드폰 번호 입력(-포함) : ");
+		bank.setPhone(sc.next());
+		return bank;
+	}
 	/*public void printOne(Bank bank) {
 		System.out.println(bank);
 	}*/

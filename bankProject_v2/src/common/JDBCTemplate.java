@@ -30,6 +30,14 @@ public class JDBCTemplate {
 			e.printStackTrace();
 		}
 	}
+	public static void close(ResultSet rset) {
+		try {
+			if(rset != null && !rset.isClosed())
+				rset.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static void commit(Connection conn) {
 		try {
 			if(conn != null && !conn.isClosed())

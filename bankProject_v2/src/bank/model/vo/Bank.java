@@ -8,6 +8,7 @@ public class Bank implements java.io.Serializable{
 	private int userNo;
 	private String userName;
 	private String userSsn;
+	private String phone;
 	private String accountNo;
 	private Date openDate;
 	private int typeNo;
@@ -20,12 +21,13 @@ public class Bank implements java.io.Serializable{
 	
 	public Bank() {}
 
-	public Bank(int userNo, String userName, String userSsn, String accountNo, Date openDate, int typeNo,
+	public Bank(int userNo, String userName, String userSsn, String phone, String accountNo, Date openDate, int typeNo,
 			String typeName, Date transDate, String transContent, int deposit, int withdraw, int balance) {
 		super();
 		this.userNo = userNo;
 		this.userName = userName;
 		this.userSsn = userSsn;
+		this.phone = phone;
 		this.accountNo = accountNo;
 		this.openDate = openDate;
 		this.typeNo = typeNo;
@@ -36,6 +38,8 @@ public class Bank implements java.io.Serializable{
 		this.withdraw = withdraw;
 		this.balance = balance;
 	}
+
+	
 
 	public int getUserNo() {
 		return userNo;
@@ -59,6 +63,14 @@ public class Bank implements java.io.Serializable{
 
 	public void setUserSsn(String userSsn) {
 		this.userSsn = userSsn;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	public String getAccountNo() {
