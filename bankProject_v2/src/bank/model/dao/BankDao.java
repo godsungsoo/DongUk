@@ -27,44 +27,38 @@ public class BankDao {
 		return result;
 	}
 
-	public ArrayList<Bank> selectList(Connection conn) {
+	public ArrayList<Bank> selectAll(Connection conn) {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		
-		PreparedStatement pstmt = null;
-		//Statement stmt = null;
+		Statement stmt = null;
 		ResultSet rset = null;
 		
-		String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no)";
-		//String query  = "select * from bankmanager";
-		try {
-			pstmt = conn.prepareStatement(query);
-			//pstmt.setString(1, "USER_NO");
-			//pstmt.setString(2, "USER_NAME");
-			rset = pstmt.executeQuery();
-			//stmt = conn.createStatement();
-			//rset = stmt.executeQuery(query);
-			System.out.println(rset.next());
-			while(rset.next()) {
+		String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone "
+				+ "		from bankmanager "
+				+ "		join transaction using (user_no)"
+				+ "		join account using (account_no)";
+		
+		try {			
+			stmt = conn.createStatement();
+			rset = stmt.executeQuery(query);
+				while(rset.next()) {				
 				Bank bank = new Bank();
 				//고객번호 이름 계좌번호  잔액 통장개설일 최근거래일 핸드폰 번호
 				bank.setUserNo(rset.getInt("USER_NO"));
 				bank.setUserName(rset.getString("USER_NAME"));
-				/*bank.setAccountNo(rset.getString("account_no"));
+				bank.setAccountNo(rset.getString("account_no"));
 				bank.setBalance(rset.getInt("BALANCE"));
 				bank.setOpenDate(rset.getDate("OPEN_DATE"));
 				bank.setTransDate(rset.getDate("TRANS_DATE"));
-				bank.setPhone(rset.getString("PHONE"));*/
+				bank.setPhone(rset.getString("PHONE"));
 				bankList.add(bank);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			close(rset);
-			close(pstmt);
-			//close(stmt);
-		}
-		
-		
+			close(rset);			
+			close(stmt);
+		}		
 		return bankList;
 	}
 
@@ -72,11 +66,11 @@ public class BankDao {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		//String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no) where account_no = ?";
-		String query = "select a.user_no from bankmanager a, transaction b where a.user_no = b.user_no";
+		String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no) where account_no = ?";
+		
 		try {
 			pstmt = conn.prepareStatement(query);
-			//pstmt.setString(1, inputAccountNo);
+			pstmt.setString(1, inputAccountNo);
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				Bank bank = new Bank();
@@ -103,8 +97,14 @@ public class BankDao {
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				bank = new Bank();
-				bank.setUserNo(rset.getInt("user_no"));
-				bankList.add(bank);
+				bank.setUserNo(rset.getInt("USER_NO"));
+				bank.setUserName(rset.getString("USER_NAME"));
+				bank.setAccountNo(rset.getString("account_no"));
+				bank.setBalance(rset.getInt("BALANCE"));
+				bank.setOpenDate(rset.getDate("OPEN_DATE"));
+				bank.setTransDate(rset.getDate("TRANS_DATE"));
+				bank.setPhone(rset.getString("PHONE"));
+				bankList.add(bank);				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

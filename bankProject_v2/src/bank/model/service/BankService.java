@@ -23,9 +23,9 @@ public class BankService {
 		return result;
 	}
 
-	public ArrayList<Bank> selectList() {
+	public ArrayList<Bank> selectAll() {
 		Connection conn = getConnection();
-		ArrayList<Bank> bankList = bdao.selectList(conn);
+		ArrayList<Bank> bankList = bdao.selectAll(conn);
 		close(conn);
 		return bankList;
 	}

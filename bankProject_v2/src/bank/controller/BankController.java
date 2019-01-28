@@ -10,6 +10,11 @@ public class BankController {
 	BankService bservice = new BankService();
 	public BankController() {}
 
+	public void bankNewInsert(Bank bankInsert) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void bankInsert(Bank bank) {
 		int result = bservice.insert(bank);
 		
@@ -21,7 +26,7 @@ public class BankController {
 	}
 
 	public ArrayList<Bank> selectAll() {
-		ArrayList<Bank> bankList = bservice.selectList();
+		ArrayList<Bank> bankList = bservice.selectAll();
 		if(bankList.size() == 0 || bankList == null) {
 			System.out.println("\n계좌정보가 존재하지 않습니다.");
 			new BankMenu().displayMenu();
@@ -86,6 +91,8 @@ public class BankController {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 	
 
