@@ -12,16 +12,30 @@ public class BankDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?);"
-				+ "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT);"
-				+ "insert into transaction (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?)";
+		/*String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?);  "
+				+ "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT); "
+				+ "insert into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?)";*/
+/*		String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?)";
+		query = "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT)";
+*/		
+		String query = "insert all into bankmanager values (SEQ_NO.NEXTVAL, ?, ?, ?) into account  values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT) into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?) select * from dual";
+		//String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?)";
+		//String query2 = "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT)";
+		//String query3 = "insert into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?)";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getUserName());
 			pstmt.setString(2, bank.getUserSsn());
 			pstmt.setString(3, bank.getPhone());
+			/*pstmt.addBatch();
+			pstmt = conn.prepareStatement(query2);
+			pstmt.addBatch();
+			pstmt = conn.prepareCall(query3);	*/		
 			pstmt.setInt(4, bank.getDeposit());
 			pstmt.setInt(5, bank.getDeposit());
+			//pstmt.addBatch();
+			//pstmt.executeUpdate();
+			//pstmt.executeBatch();
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,11 +50,14 @@ public class BankDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		String query = "insert into bankmanager values (?,?,?,?);"
-				+ "insert into account values (?,?);"
-				+ "insert into transaction (?,?,?,?,?,?,?,?)";
+		String query = "insert all into account  values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT) into transaction values ((select user_no from bankmanager where user_name = ? and user_ssn = ?), '02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?) select * from dual";
 		try {
 			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, bank.getUserName());
+			pstmt.setString(2, bank.getUserSsn());
+			pstmt.setInt(3, bank.getDeposit());
+			pstmt.setInt(4, bank.getDeposit());
+			result = pstmt.executeUpdate();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

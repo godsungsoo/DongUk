@@ -114,6 +114,9 @@ INSERT INTO TRANSACTION VALUES(2,'02-106', DEFAULT, 1, ' ',1000,0,2000);
 
 insert into transaction values((select distinct user_no from transaction where account_no = '02-106'),'02-106',DEFAULT, 1, ' ',1000,0,3000);
 
+
+
+
 select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no);
 /*고객번호 user_no
 이름 user_name
@@ -122,69 +125,69 @@ select user_no, user_name, account_no, balance, open_date, trans_date, phone fro
 통장개설일 open_date
 최근거래일 trans_date
 핸드폰 번호 phone*/
-select a.user_no from bankmanager a, transaction b where a.user_no = b.user_no;
-
-select user_no, account_no, trans_date, type_no, trans_content, deposit, withdraw, balance from transaction where account_no = '02-100';
-
-select * from bankmanager;
-update bankmanager set phone = '010' where user_no = 1;
-rollback;
-select * from transaction;
-
-delete 
-from bankmanager 
---join transaction using (user_no)
-where user_name = '김동욱' and user_ssn = '910618-1000000';-- and account_no = '02_100';
-rollback;
-delete
-from transaction
-join bankmanager using(user_no)
-where user_name = '김동욱' and user_ssn = '910618-1000000' and account_no = '02-100';
-
-select *
-from transaction
-join bankmanager using(user_no)
-where user_name = '김동욱' and user_ssn = '910618-1000000' and account_no = '02-101';
-select *
-from transaction; 
-where account_no like '02-100';
-select * from transaction
-where account_no = '02-100';
-
-delete (select *
-from transaction
-join bankmanager using(user_no)
-join account using(account_no)
-where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
-delete account where account_no = '02-106';
-rollback;
-select * from transaction; 
-select * from bankmanager;
-select * from account;
-select * from transaction 
-join bankmanager using(user_no)
-where user_name = '윤선용' and account_no = '02-106';
-
-select *
-from account
-join transaction using (account_no)
-join bankmanager using(user_no)
-where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106';
-delete (select *
-from account
-join transaction using (account_no)
-join bankmanager using(user_no)
-where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
-
-select * 
-from account
-where account_no = (select distinct account_no
-                    from transaction
-                    join bankmanager using(user_no)
-                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
-delete (select * 
-from account
-where account_no = (select distinct account_no
-                    from transaction
-                    join bankmanager using(user_no)
-                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106'));
+--select a.user_no from bankmanager a, transaction b where a.user_no = b.user_no;
+--
+--select user_no, account_no, trans_date, type_no, trans_content, deposit, withdraw, balance from transaction where account_no = '02-100';
+--
+--select * from bankmanager;
+--update bankmanager set phone = '010' where user_no = 1;
+--rollback;
+--select * from transaction;
+--
+--delete 
+--from bankmanager 
+----join transaction using (user_no)
+--where user_name = '김동욱' and user_ssn = '910618-1000000';-- and account_no = '02_100';
+--rollback;
+--delete
+--from transaction
+--join bankmanager using(user_no)
+--where user_name = '김동욱' and user_ssn = '910618-1000000' and account_no = '02-100';
+--
+--select *
+--from transaction
+--join bankmanager using(user_no)
+--where user_name = '김동욱' and user_ssn = '910618-1000000' and account_no = '02-101';
+--select *
+--from transaction; 
+--where account_no like '02-100';
+--select * from transaction
+--where account_no = '02-100';
+--
+--delete (select *
+--from transaction
+--join bankmanager using(user_no)
+--join account using(account_no)
+--where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
+--delete account where account_no = '02-106';
+--rollback;
+--select * from transaction; 
+--select * from bankmanager;
+--select * from account;
+--select * from transaction 
+--join bankmanager using(user_no)
+--where user_name = '윤선용' and account_no = '02-106';
+--
+--select *
+--from account
+--join transaction using (account_no)
+--join bankmanager using(user_no)
+--where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106';
+--delete (select *
+--from account
+--join transaction using (account_no)
+--join bankmanager using(user_no)
+--where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
+--
+--select * 
+--from account
+--where account_no = (select distinct account_no
+--                    from transaction
+--                    join bankmanager using(user_no)
+--                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106');
+--delete (select * 
+--from account
+--where account_no = (select distinct account_no
+--                    from transaction
+--                    join bankmanager using(user_no)
+--                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106'));

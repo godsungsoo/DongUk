@@ -48,7 +48,7 @@ public class BankMenu {
 								+ "\n8. 이전으로 돌아가기"
 								+ "\n메뉴 선택 :");
 			switch(sc.nextInt()) {
-			case 1 :bController.bankNewInsert(bankInsert()); 
+			case 1 :bController.bankNewInsert(bankNewInsert()); 
 					break;
 			case 2 :bController.bankInsert(bankInsert());
 					break;
@@ -107,7 +107,7 @@ public class BankMenu {
 		} while(true);
 	}
 	
-	public Bank bankInsert() {
+	public Bank bankNewInsert() {
 		Bank bank = new Bank();
 		System.out.print("고객명 입력 : ");
 		bank.setUserName(sc.next());
@@ -115,6 +115,17 @@ public class BankMenu {
 		bank.setUserSsn(sc.next());
 		System.out.print("핸드폰 번호 입력(-포함 : ");
 		bank.setPhone(sc.next());
+		System.out.print("첫 입금액 입력 : (1000원 이상)");
+		bank.setDeposit(sc.nextInt());
+		return bank;
+	}
+	
+	public Bank bankInsert() {
+		Bank bank = new Bank();
+		System.out.print("고객명 입력 : ");
+		bank.setUserName(sc.next());
+		System.out.print("주민번호 입력(-포함) : ");
+		bank.setUserSsn(sc.next());
 		System.out.print("첫 입금액 입력 : (1000원 이상)");
 		bank.setDeposit(sc.nextInt());
 		return bank;
