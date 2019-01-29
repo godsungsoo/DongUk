@@ -129,6 +129,7 @@ public class BankMenu {
 		for(Bank bank : bankList) {
 			System.out.println(bank);
 		}
+			
 	}
 	public String inputAccountNo() {
 		System.out.print("계좌번호(-포함) :");
@@ -143,7 +144,7 @@ public class BankMenu {
 	public Bank inputPhone() {
 		Bank bank = new Bank();
 		System.out.print("고객번호 입력 : ");
-		bank.setUserSsn(sc.next());
+		bank.setUserNo(sc.nextInt());
 		System.out.print("바꿀 핸드폰 번호 입력(-포함) : ");
 		bank.setPhone(sc.next());
 		return bank;
@@ -173,7 +174,7 @@ public class BankMenu {
 		bank.setUserSsn(sc.next());
 		System.out.print("삭제할 계좌번호 : ");
 		bank.setAccountNo(sc.next());
-		printInfo(bController.selectAccountNo(bank.getAccountNo()));
+		printInfo(bController.selectAccount(bank.getAccountNo()));
 		System.out.println("삭제할 계좌가 해당 계좌가 맞습니까? (y/n)");
 		if(sc.next().toLowerCase().charAt(0) == 'n') {
 			System.out.println("관리자 메뉴로 돌아갑니다.");

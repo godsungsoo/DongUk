@@ -10,13 +10,17 @@ public class BankController {
 	BankService bservice = new BankService();
 	public BankController() {}
 
-	public void bankNewInsert(Bank bankInsert) {
-		// TODO Auto-generated method stub
+	public void bankNewInsert(Bank bank) {
+		int result = bservice.bankNewInsert(bank);
+		if(result > 0)
+			System.out.println("\n계좌 정보 등록 성공!");
+		else
+			System.out.println("\n계좌 등록 실패!");
 		
 	}
 	
 	public void bankInsert(Bank bank) {
-		int result = bservice.insert(bank);
+		int result = bservice.bankInsert(bank);
 		
 		if(result > 0)
 			System.out.println("\n계좌 정보 등록 성공!");
@@ -34,8 +38,8 @@ public class BankController {
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectAccountNo(String inputAccountNo) {
-		ArrayList<Bank> bankList = bservice.selectAccountNo(inputAccountNo);
+	public ArrayList<Bank> selectAccount(String inputAccountNo) {
+		ArrayList<Bank> bankList = bservice.selectAccount(inputAccountNo);
 		if(bankList.size() == 0 || bankList == null) {
 			System.out.println("\n해당 계좌번호가 존재하지 않습니다.");
 			new BankMenu().displayMenu();
@@ -87,10 +91,7 @@ public class BankController {
 		return null;
 	}
 
-	public ArrayList<Bank> selectAccount(String inputAccountNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	
 
