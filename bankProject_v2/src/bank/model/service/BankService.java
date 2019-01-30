@@ -74,6 +74,30 @@ public class BankService {
 		return result;
 	}
 
-	
+	public int insertDeposit(Bank bank) {
+		Connection conn = getConnection();
+		int result = bdao.insertDaposit(conn, bank);
+		if(result > 0)
+			commit(conn);
+		else
+			rollback(conn);
+		return result;
+	}
 
+	public int insertWithdraw(Bank bank) {
+		Connection conn = getConnection();
+		int result = bdao.insertWithdraw(conn, bank);
+		if(result > 0)
+			commit(conn);
+		else
+			rollback(conn);
+		return result;
+	}
+
+	public int insertTransaction(String accountNo) {
+		Connection conn = getConnection();
+		int result = bdao.insertTransaction(conn, accountNo);
+		close(conn);
+		return result;
+	}
 }

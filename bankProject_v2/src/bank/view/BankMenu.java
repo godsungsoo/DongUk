@@ -91,7 +91,7 @@ public class BankMenu {
 					break;
 			case 2 :bController.insertWithdraw(inputWithdraw());
 					break;
-			case 3 :bController.selectTransaction(inputAccountNo());
+			case 3 :bController.insertTransaction(inputAccountNo());
 					break;
 			case 4 :printTrans(bController.selectAccount(inputAccountNo()));//출력용 메소드 하나 더 필요
 			case 5 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
@@ -126,7 +126,7 @@ public class BankMenu {
 		bank.setUserName(sc.next());
 		System.out.print("주민번호 입력(-포함) : ");
 		bank.setUserSsn(sc.next());
-		System.out.print("첫 입금액 입력 : (1000원 이상)");
+		System.out.print("첫 입금액 입력 (1000원 이상) : ");
 		bank.setDeposit(sc.nextInt());
 		return bank;
 	}
@@ -143,7 +143,7 @@ public class BankMenu {
 			
 	}
 	public String inputAccountNo() {
-		System.out.print("계좌번호(-포함) :");
+		System.out.print("계좌번호(-포함)  : ");
 		return sc.next();
 	}
 	
@@ -154,8 +154,10 @@ public class BankMenu {
 	
 	public Bank inputPhone() {
 		Bank bank = new Bank();
-		System.out.print("고객번호 입력 : ");
-		bank.setUserNo(sc.nextInt());
+		System.out.print("고객명 : ");
+		bank.setUserName(sc.next());
+		System.out.print("주민번호 입력[-v포함] : ");
+		bank.setUserSsn(sc.next());
 		System.out.print("바꿀 핸드폰 번호 입력(-포함) : ");
 		bank.setPhone(sc.next());
 		return bank;
@@ -174,7 +176,7 @@ public class BankMenu {
 		System.out.print("계좌번호 입력(-포함) : ");
 		bank.setAccountNo(sc.next());
 		System.out.print("출금액 :");
-		bank.setDeposit(sc.nextInt());
+		bank.setWithdraw(sc.nextInt());
 		return bank;
 	}
 	public Bank inputDeleteAccount() {

@@ -139,10 +139,10 @@ public class BankDao {
 		ResultSet rset = null;
 		Bank bank = null;
 		//String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no) where user_name = ?";
-		String query = "SELECT USER_NO, USER_NAME, ACCOUNT_NO, BALANCE, OPEN_DATE, TRANS_DATE, PHONE FROM BANKMANAGER JOIN TRANSACTION USING (USER_NO) JOIN ACCOUNT USING (ACCOUNT_NO) WHERE USER_NAME = ?";
+		String query = "SELECT USER_NO, USER_NAME, ACCOUNT_NO, BALANCE, OPEN_DATE, TRANS_DATE, PHONE FROM BANKMANAGER JOIN TRANSACTION USING (USER_NO) JOIN ACCOUNT USING (ACCOUNT_NO) WHERE USER_NAME like ?";
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, inputUserName);
+			pstmt.setString(1, "%"+inputUserName+"%");			
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				bank = new Bank();
@@ -166,11 +166,12 @@ public class BankDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		String query = "update bankmanager set phone = ? where user_no = ?";
+		String query = "update bankmanager set phone = ? where user_name = ? and user_ssn = ?";
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getPhone());
-			pstmt.setInt(2, bank.getUserNo());
+			pstmt.setString(2, bank.getUserName());
+			pstmt.setString(3, bank.getUserSsn());
 			result = pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -184,7 +185,7 @@ public class BankDao {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		String query = "delete (select * from account "
-				+ "where account_no = (select distinct account_no "
+								+ "where account_no = (select distinct account_no "
 									+ "from transaction join bankmanager using(user_no) "
 									+ "where user_name = ? and user_ssn = ? and account_no = ?))";
 		//그냥 join해서 delete를 하면 account테이블에 남아있음. account테이블에서 해당 계좌를 지우면 on delete cascade이기 때문에
@@ -201,6 +202,68 @@ public class BankDao {
 			e.printStackTrace();
 		}
 		
+		return result;
+	}
+
+	public int insertDaposit(Connection conn, Bank bank) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String query = "insert into transaction values((select distinct user_no " + 
+				"                                from transaction " + 
+				"                                where account_no = ?),?,default,1,' ',?,0,?+(select balance " + 
+				" from (select balance, trans_date, row_number() over(order by trans_date desc) as rank " + 
+				"      from transaction " + 
+				"      where account_no = ?) " + 
+				"where rank = 1))";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, bank.getAccountNo());
+			pstmt.setString(2, bank.getAccountNo());
+			pstmt.setInt(3, bank.getDeposit());
+			pstmt.setInt(4, bank.getDeposit());
+			pstmt.setString(5, bank.getAccountNo());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public int insertWithdraw(Connection conn, Bank bank) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String query = "insert into transaction values((select distinct user_no " + 
+				"                                from transaction " + 
+				"                                where account_no = ?),?,default,2,' ',0,?,(select balance " + 
+				" from (select balance, trans_date, row_number() over(order by trans_date desc) as rank " + 
+				"      from transaction " + 
+				"      where account_no = ?) " + 
+				"where rank = 1) -? )";
+		try {
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, bank.getAccountNo());
+			pstmt.setString(2, bank.getAccountNo());
+			pstmt.setInt(3, bank.getWithdraw());
+			pstmt.setString(4, bank.getAccountNo());
+			pstmt.setInt(5, bank.getWithdraw());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public int insertTransaction(Connection conn, String accountNo) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		String query = "";
+		try {
+			pstmt = conn.prepareStatement(query);
+			
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return result;
 	}
 

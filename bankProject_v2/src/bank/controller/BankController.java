@@ -77,26 +77,30 @@ public class BankController {
 	}
 
 	public void insertDeposit(Bank bank) {
-		// TODO Auto-generated method stub
+		int result = bservice.insertDeposit(bank);
+		if(result > 0 )
+			System.out.println("\n 입금 성공!");
+		else
+			System.out.println("\n 입금 실패");
 		
 	}
 
 	public void insertWithdraw(Bank bank) {
-		// TODO Auto-generated method stub
+		int result = bservice.insertWithdraw(bank);
+		if(result > 0)
+			System.out.println("\n 출금 성공!");
+		else
+			System.out.println("\n 출금 실패!");
 		
 	}
 
-	public ArrayList<Bank> selectTransaction(String inputAccountNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public void insertTransaction(String accountNo) {
+		
+		int result = bservice.insertTransaction(accountNo);
+		if(result > 0)
+			System.out.println("\n 이체 성공!");
+		else
+			System.out.println("\n 이체 실패!");
 	}
-
-	
-
-	
-
-	
-
-	
 	
 }
