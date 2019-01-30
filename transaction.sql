@@ -1,4 +1,4 @@
---거래 날짜로 처리 하는 부분이 있어 여기서 부터는 각각 Insert하시오
+﻿--거래 날짜로 처리 하는 부분이 있어 여기서 부터는 각각 Insert하시오
 --F5로 읽어 들일 시에 시간의 차이가 아예 없음.
 INSERT INTO TRANSACTION VALUES(1,'02-100', DEFAULT, 1, ' ',1000,0,1000);
 INSERT INTO TRANSACTION VALUES(1,'02-101', DEFAULT, 1, ' ',1000,0,1000);
@@ -11,3 +11,4 @@ INSERT INTO TRANSACTION VALUES(2,'02-106', DEFAULT, 1, ' ',1000,0,2000);
 
 insert into transaction values((select distinct user_no from transaction where account_no = '02-106'),'02-106',DEFAULT, 1, ' ',1000,0,3000);
 commit;
+

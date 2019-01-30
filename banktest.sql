@@ -1,4 +1,11 @@
-﻿insert all 
+﻿--delete (select * 
+--from account
+--where account_no = (select distinct account_no
+--                    from transaction
+--                    join bankmanager using(user_no)
+--                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106'));
+
+insert all 
 into bankmanager values (SEQ_NO.NEXTVAL, ?, ?, ?) 
 into account  values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT) 
 into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?) 
@@ -94,3 +101,28 @@ where rank = 1))
 select * from dual;
 
 
+insert all into transaction values((select distinct user_no from transaction where account_no = '02-102'),'02-102',default,2,' ',0,1000,(select balance from (select balance, trans_date, row_number() over(order by trans_date desc) as rank from transaction where account_no = '02-102')where rank = 1)-1000) into transaction values((select distinct user_no from transaction where account_no = '02-106'),'02-106',default,1,' ',1000,0,1000+(select balance from (select balance, trans_date, row_number() over(order by trans_date desc) as rank from transaction where account_no = '02-106') where rank = 1)) select * from dual;
+
+--자바 계좌이체에 적용할 쿼리문
+insert all
+into transaction values((select distinct user_no
+                                from transaction
+                                where account_no = '02-102'),'02-102',default,3,(select distinct user_name
+from transaction
+join bankmanager using (user_no)
+where account_no = '02-106'),0,1000,(select balance
+from (select balance, trans_date, row_number() over(order by trans_date desc) as rank
+      from transaction
+      where account_no = '02-102') 
+where rank = 1)-1000)
+into transaction values((select distinct user_no
+                                from transaction
+                                where account_no = '02-106'),'02-106',default,3,(select distinct user_name
+from transaction
+join bankmanager using (user_no)
+where account_no = '02-102'),1000,0,1000+(select balance
+from (select balance, trans_date, row_number() over(order by trans_date desc) as rank
+      from transaction
+      where account_no = '02-106') 
+where rank = 1))
+select * from dual;

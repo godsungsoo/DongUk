@@ -1,4 +1,4 @@
-DROP TABLE ACCOUNT CASCADE constraints;
+﻿DROP TABLE ACCOUNT CASCADE constraints;
 DROP table BANKMANAGER CASCADE constraints;
 DROP table transaction CASCADE constraints;
 DROP TABLE TYPE CASCADE CONSTRAINTS;
@@ -104,26 +104,4 @@ INSERT INTO TYPE VALUES (2,'출금');
 INSERT INTO TYPE VALUES (3,'이체');
 commit;
 
-----여기서 부터는 각각 Insert하시오
---INSERT INTO TRANSACTION VALUES(1,'02-100', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(1,'02-101', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(1,'02-102', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(2,'02-103', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(2,'02-104', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(2,'02-105', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(2,'02-106', DEFAULT, 1, ' ',1000,0,1000);
---INSERT INTO TRANSACTION VALUES(2,'02-106', DEFAULT, 1, ' ',1000,0,2000);
---
---insert into transaction values((select distinct user_no from transaction where account_no = '02-106'),'02-106',DEFAULT, 1, ' ',1000,0,3000);
 
-
-
-
---select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no);
-
---delete (select * 
---from account
---where account_no = (select distinct account_no
---                    from transaction
---                    join bankmanager using(user_no)
---                    where user_name = '윤선용' and user_ssn = '911201-1000000' and account_no = '02-106'));
