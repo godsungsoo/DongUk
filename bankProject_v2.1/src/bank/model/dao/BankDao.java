@@ -1,56 +1,56 @@
 package bank.model.dao;
 
+import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
+import bank.exception.BankException;
 import bank.model.vo.Bank;
 import static common.JDBCTemplate.*;
 
 public class BankDao {
-
-	public int bankNewInsert(Connection conn, Bank bank) {
+	private Properties prop = new Properties();
+	public BankDao() throws BankException {
+		try {
+			prop.load(new FileReader("properties/query.properties"));
+		} catch (Exception e) {
+			throw new BankException(e.getMessage());
+		}
+	}
+	
+	public int bankNewInsert(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		/*String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?);  "
-				+ "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT); "
-				+ "insert into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?)";*/
-/*		String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?)";
-		query = "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT)";
-*/		
-		String query = "insert all into bankmanager values (SEQ_NO.NEXTVAL, ?, ?, ?) into account  values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT) into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?) select * from dual";
-		//String query = "insert into bankmanager values (SEQ_NO.NEXTVAL,?,?,?)";
-		//String query2 = "insert into account values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT)";
-		//String query3 = "insert into transaction values (SEQ_NO.CURRVAL,'02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?)";
+		String query = prop.getProperty("newInsert");
+		
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getUserName());
 			pstmt.setString(2, bank.getUserSsn());
 			pstmt.setString(3, bank.getPhone());
-			/*pstmt.addBatch();
-			pstmt = conn.prepareStatement(query2);
-			pstmt.addBatch();
-			pstmt = conn.prepareCall(query3);	*/		
 			pstmt.setInt(4, bank.getDeposit());
 			pstmt.setInt(5, bank.getDeposit());
-			//pstmt.addBatch();
-			//pstmt.executeUpdate();
-			//pstmt.executeBatch();
+			
 			result = pstmt.executeUpdate();
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("\n통장 개설 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
 		} finally {
 			close(pstmt);
-		}
-		
+		}		
 		return result;
 	}
 	
-	public int bankInsert(Connection conn, Bank bank) {
+	public int bankInsert(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		String query = "insert all into account  values ('02-'||SEQ_ACC.NEXTVAL, DEFAULT) into transaction values ((select user_no from bankmanager where user_name = ? and user_ssn = ?), '02-'||SEQ_ACC.CURRVAL,DEFAULT,1,' ',?,DEFAULT,?) select * from dual";
+		String query = prop.getProperty("insert");
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getUserName());
@@ -59,8 +59,12 @@ public class BankDao {
 			pstmt.setInt(4, bank.getDeposit());
 			result = pstmt.executeUpdate();
 			
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("통장개설 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
 		} finally {
 			close(pstmt);
 		}
@@ -68,16 +72,13 @@ public class BankDao {
 		return result;
 	}
 
-	public ArrayList<Bank> selectAll(Connection conn) {
+	public ArrayList<Bank> selectAll(Connection conn) throws BankException {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		
 		Statement stmt = null;
 		ResultSet rset = null;
 		
-		String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone "
-				+ "		from bankmanager "
-				+ "		join transaction using (user_no)"
-				+ "		join account using (account_no)";
+		String query = prop.getProperty("selectAll");
 		
 		try {			
 			stmt = conn.createStatement();
@@ -94,8 +95,11 @@ public class BankDao {
 				bank.setPhone(rset.getString("PHONE"));
 				bankList.add(bank);
 			}
+			if(bankList.size() == 0) {
+				throw new BankException("조회된 정보가 없습니다.");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
 		}finally {
 			close(rset);			
 			close(stmt);
@@ -103,13 +107,12 @@ public class BankDao {
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectAccount(Connection conn, String inputAccountNo) {
+	public ArrayList<Bank> selectAccount(Connection conn, String inputAccountNo) throws BankException {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
-		String query = "select user_no, account_no, trans_date, type_no, trans_content, deposit, withdraw, balance from transaction where account_no = ?";
-		// userNo + ", "   + accountNo + ", " +  transDate + ", " + typeNo + ", "
-		 //+ transContent + ", " + deposit + ", " + withdraw + ", " + balance;
+		String query = prop.getProperty("selectAccount");
+		
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, inputAccountNo);
@@ -126,23 +129,27 @@ public class BankDao {
 				bank.setBalance(rset.getInt("balance"));
 				bankList.add(bank);
 			}
+			if(bankList.size() == 0)
+				throw new BankException(inputAccountNo + " 계좌의 정보가 없습니다.");
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
+		} finally {
+			close(rset);
+			close(pstmt);
 		}
 		
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectName(Connection conn, String inputUserName) {
+	public ArrayList<Bank> selectName(Connection conn, String userName) throws BankException {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		Bank bank = null;
-		//String query = "select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no) where user_name = ?";
-		String query = "SELECT USER_NO, USER_NAME, ACCOUNT_NO, BALANCE, OPEN_DATE, TRANS_DATE, PHONE FROM BANKMANAGER JOIN TRANSACTION USING (USER_NO) JOIN ACCOUNT USING (ACCOUNT_NO) WHERE USER_NAME like ?";
+		String query = prop.getProperty("selectName");
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, "%"+inputUserName+"%");			
+			pstmt.setString(1, "%"+userName+"%");			
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				bank = new Bank();
@@ -155,39 +162,44 @@ public class BankDao {
 				bank.setPhone(rset.getString("PHONE"));
 				bankList.add(bank);				
 			}
+			if(bankList.size() == 0)
+				throw new BankException(userName + " 의 정보가 없습니다.");
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
+		} finally {
+			close(rset);
+			close(pstmt);
 		}
-		
 		return bankList;
 	}
 
-	public int updatePhone(Connection conn, Bank bank) {
+	public int updatePhone(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		
-		String query = "update bankmanager set phone = ? where user_name = ? and user_ssn = ?";
+		String query = prop.getProperty("update");
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getPhone());
 			pstmt.setString(2, bank.getUserName());
 			pstmt.setString(3, bank.getUserSsn());
 			result = pstmt.executeUpdate();
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("핸드폰 번호 변경 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
 		} finally {
 			close(pstmt);
 		}
 		return result;
 	}
 
-	public int deleteAccount(Connection conn, Bank bank) {
+	public int deleteAccount(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = "delete (select * from account "
-								+ "where account_no = (select distinct account_no "
-									+ "from transaction join bankmanager using(user_no) "
-									+ "where user_name = ? and user_ssn = ? and account_no = ?))";
+		String query = prop.getProperty("delete");
 		//그냥 join해서 delete를 하면 account테이블에 남아있음. account테이블에서 해당 계좌를 지우면 on delete cascade이기 때문에
 		//transaction에도 지워짐
 		try {
@@ -196,25 +208,24 @@ public class BankDao {
 			pstmt.setString(2, bank.getUserSsn());
 			pstmt.setString(3, bank.getAccountNo());
 			
-			result = pstmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
+			result = pstmt.executeUpdate();		
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("삭제 실패!");
+			}
+		} catch (Exception e) {
+			throw new BankException(e.getMessage());
+		} finally {
+			close(pstmt);
 		}
 		
 		return result;
 	}
 
-	public int insertDaposit(Connection conn, Bank bank) {
+	public int insertDeposit(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = "insert into transaction values((select distinct user_no " + 
-				"                                from transaction " + 
-				"                                where account_no = ?),?,default,1,' ',?,0,?+(select balance " + 
-				" from (select balance, trans_date, row_number() over(order by trans_date desc) as rank " + 
-				"      from transaction " + 
-				"      where account_no = ?) " + 
-				"where rank = 1))";
+		String query = prop.getProperty("insertDeposit");
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getAccountNo());
@@ -223,22 +234,22 @@ public class BankDao {
 			pstmt.setInt(4, bank.getDeposit());
 			pstmt.setString(5, bank.getAccountNo());
 			result = pstmt.executeUpdate();
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("입금 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
+		} finally {
+			close(pstmt);
 		}
 		return result;
 	}
 
-	public int insertWithdraw(Connection conn, Bank bank) {
+	public int insertWithdraw(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = "insert into transaction values((select distinct user_no " + 
-				"                                from transaction " + 
-				"                                where account_no = ?),?,default,2,' ',0,?,(select balance " + 
-				" from (select balance, trans_date, row_number() over(order by trans_date desc) as rank " + 
-				"      from transaction " + 
-				"      where account_no = ?) " + 
-				"where rank = 1) -? )";
+		String query = prop.getProperty("insertWithdraw");
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getAccountNo());
@@ -247,17 +258,22 @@ public class BankDao {
 			pstmt.setString(4, bank.getAccountNo());
 			pstmt.setInt(5, bank.getWithdraw());
 			result = pstmt.executeUpdate();
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("출금 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
+		} finally {
+			close(pstmt);
 		}
 		return result;
 	}
 
-	public int insertTransaction(Connection conn, Bank bank) {
+	public int insertTransaction(Connection conn, Bank bank) throws BankException {
 		int result = 0;
 		PreparedStatement pstmt = null;
-		String query = "insert all into transaction values((select distinct user_no from transaction where account_no = ?),?,default,2,(select distinct user_name from transaction join bankmanager using (user_no) where account_no = ?),0,?,(select balance from (select balance, trans_date, row_number() over(order by trans_date desc) as rank from transaction where account_no = ? )where rank = 1) - ?) "
-				+ " into transaction values((select distinct user_no from transaction where account_no = ?), ?,default,1,(select distinct user_name from transaction join bankmanager using (user_no) where account_no = ?), ?,0 ,? + (select balance from (select balance, trans_date, row_number() over(order by trans_date desc) as rank from transaction where account_no = ?) where rank = 1)) select * from dual";
+		String query = prop.getProperty("insertTransaction");
 		try {
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, bank.getAccountNo());
@@ -273,8 +289,14 @@ public class BankDao {
 			pstmt.setInt(11, bank.getWithdraw());
 			pstmt.setString(12, bank.getTransAccountNo());
 			result = pstmt.executeUpdate();
+			if(result <= 0) {
+				rollback(conn);
+				throw new BankException("계좌이체 실패!");
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BankException(e.getMessage());
+		} finally {
+			close(pstmt);
 		}
 		return result;
 	}

@@ -126,3 +126,29 @@ from (select balance, trans_date, row_number() over(order by trans_date desc) as
       where account_no = '02-106') 
 where rank = 1))
 select * from dual;
+
+insert all
+into transaction values((select distinct user_no
+                                from transaction
+                                where account_no = '02-102'),'02-102',default,3,(select distinct user_name
+                                                                                from transaction
+                                                                                join bankmanager using (user_no)
+                                                                                where account_no = '02-106'),0,1000,(select balance
+                                                                                                                    from (select balance, trans_date, row_number() over(order by trans_date desc) as rank
+                                                                                                                         from transaction
+                                                                                                                        where account_no = '02-102') where rank = 1)-1000)
+into transaction values((select distinct user_no
+                                from transaction
+                                where account_no = '02-106'),'02-106',default,3,(select distinct user_name
+                                                                                from transaction
+                                                                                  join bankmanager using (user_no)
+                                                                                where account_no = '02-102'),1000,0,1000+(select balance
+                                                                                                                         from (select balance, trans_date, row_number() over(order by trans_date desc) as rank
+                                                                                                                         from transaction
+                                                                                                                        where account_no = '02-106') where rank = 1))
+select * from dual;
+
+select distinct user_name
+from transaction
+join bankmanager using (user_no)
+where account_no = '02-106';
