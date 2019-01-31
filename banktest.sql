@@ -152,3 +152,28 @@ select distinct user_name
 from transaction
 join bankmanager using (user_no)
 where account_no = '02-106';
+
+select user_no, user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no);
+
+select user_no, user_name, account_no, balance, open_date, trans_date, phone 
+from bankmanager 
+join transaction using (user_no) 
+join account using (account_no);
+
+select user_no, user_name, account_no, balance, open_date, max(trans_date), phone 
+from bankmanager 
+join transaction using (user_no) 
+join account using (account_no)
+group by user_no;
+
+
+select *
+from bankmanager 
+join transaction using (user_no) 
+join account using (account_no);
+
+select *
+from 
+
+select user_no
+from bankmanager;

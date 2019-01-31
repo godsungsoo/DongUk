@@ -65,7 +65,7 @@ public class BankController {
 	}
 
 	public ArrayList<Bank> selectName(String inputUserName) {
-		ArrayList<Bank> bankList = = new ArrayList<>();;
+		ArrayList<Bank> bankList = new ArrayList<>();
 		try {
 			bankList = bservice.selectName(inputUserName);
 		} catch (BankException e) {

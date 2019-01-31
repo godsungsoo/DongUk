@@ -92,7 +92,8 @@ public class BankMenu {
 					break;
 			case 3 :bController.insertTransaction(inputTransaction());
 					break;
-			case 4 :printTrans(bController.selectAccount(inputAccountNo()));//출력용 메소드 하나 더 필요
+			case 4 :printTrans(bController.selectAccount(inputAccountNo())); 
+					break;//출력용 메소드 하나 더 필요
 			case 5 :System.out.print("이전 메뉴로 돌아가시겠습니까(y,n) ? :");
 					if(sc.next().toLowerCase().charAt(0) == 'y') {
 						return;
