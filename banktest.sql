@@ -177,3 +177,17 @@ from
 
 select user_no
 from bankmanager;
+
+select *
+from bankmanager
+join transaction using(user_no)
+join account using(account_no);
+
+--고객전체정보 : 계좌번호 별로 최근의 balance, 최종거래일 나오게
+select user_no, user_name, account_no, balance, open_date, trans_date, phone, to_char(trans_date,'RR/MM/DD HH:MI:SS')
+from bankmanager
+join transaction using(user_no)
+join account using(account_no)
+where trans_date in (select max(trans_date)
+                    from transaction
+                    group by account_no);
