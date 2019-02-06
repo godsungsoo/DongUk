@@ -141,7 +141,7 @@ public class BankDao {
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectName(Connection conn, String userName) throws BankException {
+	public ArrayList<Bank> selectName(Connection conn, Bank b ) throws BankException {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -149,7 +149,8 @@ public class BankDao {
 		String query = prop.getProperty("selectName");
 		try {
 			pstmt = conn.prepareStatement(query);
-			pstmt.setString(1, "%"+userName+"%");			
+			pstmt.setString(1, "%"+b.getUserName()+"%");	
+			pstmt.setString(2, b.getUserSsn());
 			rset = pstmt.executeQuery();
 			while(rset.next()) {
 				bank = new Bank();
@@ -163,7 +164,7 @@ public class BankDao {
 				bankList.add(bank);				
 			}
 			if(bankList.size() == 0)
-				throw new BankException(userName + " 의 정보가 없습니다.");
+				throw new BankException( b.getUserName() + " 의 정보가 없습니다.");
 		} catch (Exception e) {
 			throw new BankException(e.getMessage());
 		} finally {

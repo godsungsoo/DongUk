@@ -156,9 +156,13 @@ public class BankMenu {
 		return sc.next();
 	}
 	
-	public String inputUserName() {
-		System.out.print("고객명 :");
-		return sc.next();
+	public Bank inputUserName() {
+		Bank bank = new Bank();
+		System.out.print("고객명 : ");
+		bank.setUserName(sc.next());
+		System.out.print("주민번호 : ");
+		bank.setUserSsn(sc.next());
+		return bank;
 	}
 	
 	public Bank inputPhone() {

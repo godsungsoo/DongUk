@@ -64,10 +64,10 @@ public class BankController {
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectName(String inputUserName) {
+	public ArrayList<Bank> selectName(Bank bank) {
 		ArrayList<Bank> bankList = new ArrayList<>();
 		try {
-			bankList = bservice.selectName(inputUserName);
+			bankList = bservice.selectName(bank);
 		} catch (BankException e) {
 			printError(e.getMessage());
 		}		

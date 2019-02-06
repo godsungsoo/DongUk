@@ -47,9 +47,9 @@ public class BankService {
 		return bankList;
 	}
 
-	public ArrayList<Bank> selectName(String inputUserName) throws BankException {
+	public ArrayList<Bank> selectName(Bank bank) throws BankException {
 		Connection conn = getConnection();
-		ArrayList<Bank> bankList = bdao.selectName(conn, inputUserName);
+		ArrayList<Bank> bankList = bdao.selectName(conn, bank);
 		return bankList;
 	}
 

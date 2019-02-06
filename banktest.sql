@@ -191,3 +191,15 @@ join account using(account_no)
 where trans_date in (select max(trans_date)
                     from transaction
                     group by account_no);
+                    
+select user_no, user_name, account_no, balance, open_date, trans_date, phone, to_char(trans_date,'RR/MM/DD HH:MI:SS') from bankmanager join transaction using(user_no) join account using(account_no) where trans_date in (select max(trans_date) from transaction group by account_no);
+
+--원래 selectAll
+select user_no,user_name, account_no, balance, open_date, trans_date, phone from bankmanager join transaction using (user_no) join account using (account_no);
+
+SELECT USER_NO, USER_NAME, ACCOUNT_NO, BALANCE, OPEN_DATE, TRANS_DATE, PHONE 
+FROM BANKMANAGER 
+JOIN TRANSACTION USING (USER_NO) 
+JOIN ACCOUNT USING (ACCOUNT_NO)
+WHERE USER_NAME like '%김%' and trans_date in (select max(trans_date) from transaction group by account_no);
+
